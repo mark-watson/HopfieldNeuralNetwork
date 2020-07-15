@@ -1,5 +1,7 @@
 ## Hopfield Neural Networks  - code written in the 1980s, used to be in my Java AI book (removed summer of 2020 edition)
 
+Copyright 1989-2020 Mark Watson. All rights reserved.
+
 Hopfield neural networks implement associative (or content addressable) memory. A Hopfield network is trained using a set of patterns and a simple learning algorithm can encode this set of patterns. After training, the network can be shown a pattern similar to one of the training inputs and it will hopefully associate the “noisy” pattern with the correct input pattern. Hopfield networks are very different than back propagation networks (covered later in the [Section of Backpropagation](#backprop)) and deep learning networks (to be covered in the next chapter) because the training data only contains input examples unlike back propagation networks that are trained to associate desired output patterns with input patterns. Internally, the operation of Hopfield neural networks is very different from back propagation networks.
 
 I use Hopfield neural networks to introduce the subject of neural nets because they are very easy to simulate with a program. Hopfield networks are different from most neural architectures that you see today and I hope a brief look at them will convince you that the design space for neural networks and deep learning models is vast with many discoveries and opportunities are still waiting to be explored.
@@ -16,7 +18,6 @@ The Hopfield neural network model is defined in the file **Hopfield.java** and t
 
 Consider a pair of neurons indexed by **i** and **j**. There is a weight **W {i,j}** between these neurons that corresponds in the code to the array element **weight[i,j]**. We can define energy between the associations of these two neurons as:
 
-{lang="java",linenos=off}
 ~~~~~~~~
 energy[i,j] = -weight[i,j] * activation[i] * activation[j]
 ~~~~~~~~
@@ -28,7 +29,6 @@ When training a network with a new input, we are looking for a low energy point 
 
 The class constructor allocates storage for input values, temporary storage, and a two-dimensional array to store weights:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      public Hopfield(int numInputs) {
        this.numInputs = numInputs;
@@ -40,7 +40,6 @@ The class constructor allocates storage for input values, temporary storage, and
 
 Remember that this model is general purpose: multi-dimensional inputs can be converted to an equivalent one-dimensional array. The method **addTrainingData** is used to store an input data array for later training. All input values get clamped to an “off” or “on” value by the utility method **adjustInput**. The utility method **truncate** truncates floating-point values to an integer value. The utility method **deltaEnergy** has one argument: an index into the input vector. The class variable **tempStorage** is set during training to be the sum of a row of trained weights. So, the method **deltaEnergy** returns a measure of the energy difference between the input vector in the current input cells and the training input examples:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      private float deltaEnergy(int index) {
        float temp = 0.0f;
@@ -53,7 +52,6 @@ Remember that this model is general purpose: multi-dimensional inputs can be con
 
 The method **train** is used to set the two-dimensional weight array and the one-dimensional **tempStorage** array in which each element is the sum of the corresponding row in the two-dimensional weight array:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      public void train() {
        for (int j=1; j<numInputs; j++) {
@@ -77,7 +75,6 @@ The method **train** is used to set the two-dimensional weight array and the one
 
 Once the arrays **weight** and **tempStorage** are defined, it is simple to recall an original input pattern from a similar test pattern:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      public float [] recall(float [] pattern, int numIterations) {
        for (int i=0; i<numInputs; i++) {
@@ -101,7 +98,6 @@ Once the arrays **weight** and **tempStorage** are defined, it is simple to reca
 The test program for the Hopfield neural network class is
 **Test\_Hopfield**. This test program defined three test input patterns, each with ten values:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      static float [] data [] = {
        { 1, 1, 1, -1, -1, -1, -1, -1, -1, -1},
@@ -111,7 +107,6 @@ The test program for the Hopfield neural network class is
 
 The following code fragment shows how to create a new instance of the **Hopfield** class and train it to recognize these three test input patterns:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      test = new Hopfield(10);
      test.addTrainingData(data[0]);
@@ -122,7 +117,6 @@ The following code fragment shows how to create a new instance of the **Hopfield
 
 The static method **helper** is used to slightly scramble an input pattern, then test the training Hopfield neural network to see if the original pattern is re-created:
 
-{lang="java",linenos=off}
 ~~~~~~~~
      helper(test, "pattern 0", data[0]);
      helper(test, "pattern 1", data[1]);
@@ -131,7 +125,6 @@ The static method **helper** is used to slightly scramble an input pattern, then
 
 The following listing shows an implementation of the method **helper** (the called method **pp** simply formats a floating point number for printing by clamping it to zero or one). This version of the code randomly flips one test bit and we will see that the trained Hopfield network almost always correctly recognizes the original pattern. The version of method **helper** included in the ZIP file for this book is slightly different in that two bits are randomly flipped (we will later look at sample output with both one and two bits randomly flipped).
 
-{lang="java",linenos=off}
 ~~~~~~~~
      private static void helper(Hopfield test,
                                 String s,
@@ -158,16 +151,14 @@ The following listing shows an implementation of the method **helper** (the call
 
 There is a *Makefile* that has targets for running all of the examples in this chapter. You can also run this example using:
 
-{linenos=off}
 ~~~~~~~~
 mvn install -DskipTests
-mvn test -Dtest=Hopfield_Test
+mvn test
 ~~~~~~~~
 
 
 The following listing shows how to run the program, and lists the example output:
 
-{linenos=off}
 ~~~~~~~~
      pattern 0
      Original data: 1 1 1 0 0 0 0 0 0 0
@@ -186,7 +177,6 @@ The following listing shows how to run the program, and lists the example output
 In this listing we see that the three sample training patterns in **Test\_Hopfield.java** are re-created after scrambling the data by changing one randomly chosen value to its opposite value. When you run the test program several times you will see occasional errors when one
 random bit is flipped and you will see errors occur more often with two bits flipped. Here is an example with two bits flipped per test: the first pattern is incorrectly reconstructed and the second and third patterns are reconstructed correctly:
 
-{linenos=off}
 ~~~~~~~~
      pattern 0
      Original data: 1 1 1 0 0 0 0 0 0 0
